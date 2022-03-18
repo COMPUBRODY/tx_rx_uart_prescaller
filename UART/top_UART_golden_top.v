@@ -178,7 +178,7 @@ full_duplex_uart u1(
 //	Tx Indicador	LEDR_2
 
 /*=====================================
-		DISPLAY CONTROLLERS
+		DISPLAY CONTROLLERS__ok
 =====================================*/
 
 
@@ -197,7 +197,7 @@ displays_controller u2 (
 //Modo Baudrate
 
 /*=====================================
-		PREESCALLER
+		PREESCALLER__ok
 =====================================
 preescaller	u3	(
 				.clock		(CLOCK_50),
@@ -209,7 +209,7 @@ preescaller	u3	(
 //Speed Change
 */
 /*=====================================
-		DEBOUNCER
+		DEBOUNCER___ok
 =====================================*/
 
 debouncer	u4(
@@ -222,7 +222,7 @@ debouncer	u4(
 //Manda Tx			LEDR_0 Indicador 
 
 /*=====================================
-		BAUDRATE GENERATOR
+		BAUDRATE GENERATOR___ok
 =====================================*/
 
 baudrate_generator u5(
