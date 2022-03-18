@@ -1,32 +1,42 @@
 //`timescale 1ns / 10ps
-module preescaller(
+//`define SOURCE_CLK  50000000
+//`define SCALE_CLK  50000000
+module preescaller#(parameter CLK , parameter SCALE  )(
 	input clock,
-	input rst,
-	output enable_flag,
+	input enable,
 	output slow_clock
 
 );
-
-	parameter COUNTER_SIZE = 22;
-	parameter COUNTER_MAX_COUNT = (2 ** COUNTER_SIZE) - 1;
+    //localparam Freq_in      = 50000000;
+    //localparam Parts_div    = 20; 
+    localparam [31:0] MAX_SIZE = CLK/SCALE ;    //Señal Resultante Maxima Freq 2.5mhz, 4nS
+	//parameter COUNTER_SIZE = MAX_SIZE;
+	//parameter COUNTER_MAX_COUNT = (2 ** COUNTER_SIZE) - 1;
 	
-	reg [COUNTER_SIZE-1:0] count;
+	reg [31:0] count;
 	
-	always @(posedge clock or negedge rst)
-	if(!rst)
-		count <= 0;
-	else
-	begin
-		if(count == COUNTER_MAX_COUNT)
-			count <= 0;
-		else
-			count <= count +1'b1;
-			count <= 0;
-	end
 	
-	assign slow_clock = count[COUNTER_SIZE-1];
+	initial	count 		=	0;
+	//initial	slow_clock	=	0;
+	
+    always @(posedge clock)
+        if(enable)
+        begin
+            count = count + 1;
+            if(count == MAX_SIZE) 
+            begin
+                count = 0;
+            end
+            /*if(count == 1)
+            begin
+                count = 0;
+            end*/
+	    end
+	
+	assign slow_clock = count;
 	
 endmodule
+
 
 
 

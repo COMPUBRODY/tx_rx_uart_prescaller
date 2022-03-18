@@ -1,11 +1,18 @@
 module uart_rx (
-                    clk16x,clrn,rdn,
-                    d_out,r_ready,rxd,
+                    clk16x,
+                    clrn,
+                    rdn,
+                    d_out,
+                    r_ready,
+                    rxd,
                     parity_error,
-                    frame_error,cnt16x,
-                    r_data,no_bits_rcvd,
+                    frame_error,
+                    cnt16x,
+                    r_data,
+                    no_bits_rcvd,
                     r_buffer,
-                    clk1x,sampling
+                    clk1x,
+                    sampling
 ); // uart receiver
 
 

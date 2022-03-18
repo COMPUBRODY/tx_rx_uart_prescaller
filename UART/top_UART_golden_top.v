@@ -78,8 +78,7 @@ module top_UART_golden_top(
 	
       /* Enables GPIO - 3.3V */
 	`ifdef ENABLE_GPIO
-      inout     [35:0]         GPIO_0,
-      inout     [35:0]         GPIO_1
+      inout     [35:0]         GPIO_0
 	`endif
 );
 
@@ -88,10 +87,12 @@ module top_UART_golden_top(
 //  REG/WIRE declarations
 //=======================================================
 
-//reg [:] ;
+//		WIRES
 wire 	flag_1;
 wire	slow_clk;
-
+wire	uart_Clk;
+//		REGISTERS
+//reg [:] ;
 
 
 //=======================================================
@@ -101,7 +102,7 @@ wire	slow_clk;
 
 
 
-/*
+/*=====================================
 
 -MODULOS UTILIZADOS
 		
@@ -110,13 +111,14 @@ wire	slow_clk;
 		c)	Preescaller (2 Freq, Modificables)   	Ingresar por parametro la freq necesaria?
 		d) Contadores?										NO NECESARIO SEGUN YO
 		c) UART (New)										IMPLEMENTACION CON TX Y RX
+		d) generador de Baudrate						Necesario conectados al preescaller
+		e) controlador de registros					necesario para mandar o recibir cadenas
+		
+
+=====================================*/
 
 
-*/
-
-
-
-/*
+/*=====================================
 		UART MODULE 
 
 
@@ -136,9 +138,9 @@ uart u1 (
 
 */
 
-/*
+/*=====================================
 		UART RX MODULE 
-*/
+
  
  uart_rx		u1	(
 	 
@@ -157,11 +159,27 @@ uart u1 (
 					sampling
 
  );
+ */
  
-	 
-/*
+ /*=====================================
+		UART FULL DUPLEX MODULE 
+=====================================*/
+full_duplex_uart u1(
+							.clk16x		(uart_Clk), 
+							.clrn			(SW[0]),
+							.txd			(GPIO_0[33]),
+							.rxd			(GPIO_0[31]),
+							.sending		(LEDR[2])
+
+);
+
+// Errors
+// RX indicador	LEDR_1
+//	Tx Indicador	LEDR_2
+
+/*=====================================
 		DISPLAY CONTROLLERS
-*/
+=====================================*/
 
 
 displays_controller u2 (
@@ -173,23 +191,26 @@ displays_controller u2 (
 				.seg4	(HEX4) ,
 				.seg5	(HEX5) 
 	);
-/*
+
+//Modo RX
+//Modo Tx
+//Modo Baudrate
+
+/*=====================================
 		PREESCALLER
-*/
+=====================================
 preescaller	u3	(
 				.clock		(CLOCK_50),
-				.rst		(SW[0]),
-				.enable_flag (flag_1),
+				.enable		(SW[0]),
 				.slow_clock	(slow_clk)
 
 );
 
-
-
-/*
-		DEBOUNCER
-
+//Speed Change
 */
+/*=====================================
+		DEBOUNCER
+=====================================*/
 
 debouncer	u4(
 				 .clk		(CLOCK_50),
@@ -198,5 +219,30 @@ debouncer	u4(
 
 );
 
+//Manda Tx			LEDR_0 Indicador 
+
+/*=====================================
+		BAUDRATE GENERATOR
+=====================================*/
+
+baudrate_generator u5(
+								.clock			(CLOCK_50),
+								.baudrate_sel	(SW[3:1]),
+								.uart_clock		(uart_Clk)
+);
+
+//9600		LEDR_3 Indicador
+//55200		LEDR_4 Indicador
+//115600		LEDR_5 Indicador
+
+/*=====================================
+		REGISTERS CONTROLLER
+=====================================*/
+
+register_controller u6(
+
+);
+//How many Bytes?
+//for send strings?
 
 endmodule

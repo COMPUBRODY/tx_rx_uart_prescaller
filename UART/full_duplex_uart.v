@@ -71,36 +71,36 @@ reg [3:0] cnt16x; // x16 clock counter
 
 // receiver
 uart_rx recver (
-    clk16x, 
-    clrn, 
-    rdn, 
-    d_out, 
-    r_ready, 
-    rxd, 
-    parity_error,
-    frame_error, 
-    cnt16x, 
-    r_data, 
-    no_bits_rcvd, 
-    r_buffer,
-    r_clk1x, 
-    sampling
+						 clk16x, 
+						 clrn, 
+						 rdn, 
+						 d_out, 
+						 r_ready, 
+						 rxd, 
+						 parity_error,
+						 frame_error, 
+						 cnt16x, 
+						 r_data, 
+						 no_bits_rcvd, 
+						 r_buffer,
+						 r_clk1x, 
+						 sampling
 );
 
 // transmitter
 uart_tx sender (
-    clk16x, 
-    clrn, 
-    wrn, 
-    d_in, 
-    t_empty, 
-    txd, 
-    cnt16x,
-    no_bits_sent, 
-    t_buffer, 
-    t_clk1x, 
-    sending, 
-    t_data
+						 clk16x, 
+						 clrn, 
+						 wrn, 
+						 d_in, 
+						 t_empty, 
+						 txd, 
+						 cnt16x,
+						 no_bits_sent, 
+						 t_buffer, 
+						 t_clk1x, 
+						 sending, 
+						 t_data
 );
 
 
