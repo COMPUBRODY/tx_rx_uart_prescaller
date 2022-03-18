@@ -12,6 +12,12 @@ output clk1x; // clock for sending txd
 output reg sending; // sending a txd bit
 reg load_t_buffer; // load t_buffer
 
+
+
+=============================
+HOW TO SEND A FRAME
+===========================
+
 =============================
 TEST CASES
 ===========================

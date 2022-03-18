@@ -18,6 +18,10 @@ output reg clk1x;                       // clock for sampling rxd
 output reg sampling;                    // sampling an rxd bit
 
 
+=============================
+HOW TO READ A FRAME
+===========================
+
 ==================================
 TEST FRAME
 ==================================

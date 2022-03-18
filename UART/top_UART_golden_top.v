@@ -106,7 +106,6 @@ wire	[7:0]		rx_data;
 
 
 
-
 /*=====================================
 
 -MODULOS UTILIZADOS
@@ -126,16 +125,16 @@ wire	[7:0]		rx_data;
 		UART FULL DUPLEX MODULE 
 =====================================*/
 full_duplex_uart u1(
-							.clock		(CLOCK_50),
-							.clk_uart	(uart_Clk), 
+							.clock			(CLOCK_50),
+							.clk_uart		(uart_Clk), 
 							.clrn			(SW[0]),
 							.txd			(GPIO_0[33]),
 							.rxd			(GPIO_0[31]),
 							.sending		(LEDR[2]),
 							.tx_send		(tx_send),
 							.d_in			(tx_data),
-							.r_data		(rx_data),
-							.sampling	(LEDR[1])
+							.r_data			(rx_data),
+							.sampling		(LEDR[1])
 
 );
 
@@ -163,18 +162,7 @@ displays_controller u2 (
 //Modo Tx
 //Modo Baudrate
 
-/*=====================================
-		PREESCALLER__ok
-=====================================
-preescaller	u3	(
-				.clock		(CLOCK_50),
-				.enable		(SW[0]),
-				.slow_clock	(slow_clk)
 
-);
-
-//Speed Change
-*/
 /*=====================================
 		DEBOUNCER___ok
 =====================================*/

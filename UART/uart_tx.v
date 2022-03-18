@@ -1,31 +1,32 @@
 module uart_tx(
-        //clk16x, 
         clrn, 
-        wrn, 
+        //wrn, 
         d_in, 
-        t_empty, 
+        //t_empty, 
         txd,
-        //cnt16x, 
-        no_bits_sent,
-        t_buffer,
+        //no_bits_sent,
+        //t_buffer,
         clk_uart,
         sending,
-        t_data
+        //t_data
+        tx_send
 
 );
 
 input [7:0] d_in;  // data byte from cpu
 //input [3:0] cnt16x; // x16 clock counter
 //input clk16x;
+input clk_uart; // clock for baudrate
 input clrn; // baud rate * 16 clock
-input wrn; // cpu write, active low
+//input wrn; // cpu write, active low
+input tx_send;
 
 output reg txd; // uart txd   -----------------------> salida principal TX
-output reg t_empty; // transmitter empty
-output reg [3:0] no_bits_sent; // number of bits sent
-output reg [7:0] t_data; // reg d_in-------------->  ojo aqui salida a memoria
-output reg [7:0] t_buffer; // reg for sending -------------> ojo aqui salida a memoria
-output clk_uart; // clock for sending txd
+//output reg t_empty; // transmitter empty
+//output reg [3:0] no_bits_sent; // number of bits sent
+//output reg [7:0] t_data; // reg d_in-------------->  ojo aqui salida a memoria
+//output reg [7:0] t_buffer; // reg for sending -------------> ojo aqui salida a memoria
+
 output reg sending; // sending a txd bit   ---------------> Salida indicador Led
 
 
@@ -33,28 +34,29 @@ reg load_t_buffer; // load t_buffer
 
 
 // load data to t_data, then to t_buffer, and generate sending signal
-always @ (posedge clk_uart or negedge clrn or negedge wrn) begin
+always @ (posedge clk_uart or negedge clrn) begin
     if (!clrn) begin // on a reset
         sending <= 0; // clear sending
-        t_empty <= 1; // transmitter is ready
-        load_t_buffer <= 0;    // clear load_t_buffer
-        t_data    <= 0;    // clear t_data
-        t_buffer    <= 0;    // clear t_buffer
+        //t_empty <= 1; // transmitter is ready
+        //load_t_buffer <= 0;    // clear load_t_buffer
+        //t_data    <= 0;    // clear t_data
+        //t_buffer    <= 0;    // clear t_buffer
 
-    end else begin
+    end 
+	 /*else begin
         if (!wrn) begin        // cpu write
-        t_data <= d_in;        // load t_data
-        t_empty <= 0;        // transmitter is busy
-        load_t_buffer <= 1;        // ready to load t_buffer
+        //t_data <= d_in;        // load t_data
+        //t_empty <= 0;        // transmitter is busy
+        //load_t_buffer <= 1;        // ready to load t_buffer
         end else begin
 
             if (!sending) begin
             // not sending
             if (load_t_buffer) begin             // d2t ready
                 sending <= 1;                // sending please
-                t_buffer <= t_data;                // load t_buffer
-                t_empty <= 1;                // transmitter is ready
-                load_t_buffer <= 0;                // clear load_t_buffer
+                //t_buffer <= t_data;                // load t_buffer
+                //t_empty <= 1;                // transmitter is ready
+                //load_t_buffer <= 0;                // clear load_t_buffer
                 end
             end else begin
             // sending
@@ -62,7 +64,7 @@ always @ (posedge clk_uart or negedge clrn or negedge wrn) begin
                     sending <= 0;                // clear sending
                 end
         end
-    end
+    end*/
 end 
 
 // send a frame: [start, d0, d1, ..., d7, parity, stop]
@@ -70,9 +72,10 @@ end
  // clock for sending txd
 always @ (posedge clk_uart or negedge sending) begin
     if (!sending) begin    // if not sending
-        no_bits_sent <= 4'd0;    // clear counter
-        txd <= 1;    // stop bits
-    end else begin    // sending
+        //no_bits_sent <= 4'd0;    // clear counter
+        //txd <= 1;    // stop bits
+    end 
+	 /*else begin    // sending
         case (no_bits_sent)        // sending serially
             0: txd <= 0;            // sending start bit
             1: txd <= t_buffer[0];            // sending data bit 0
@@ -87,7 +90,7 @@ always @ (posedge clk_uart or negedge sending) begin
             default: txd <= 1;            // sending stop bit(s)
         endcase
         no_bits_sent <= no_bits_sent + 4'd1;    // counter++
-        end
+        end*/
     end
 
 
