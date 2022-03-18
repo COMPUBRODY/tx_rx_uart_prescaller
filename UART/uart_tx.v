@@ -1,28 +1,39 @@
 module uart_tx(
-        clk16x, clrn, wrn, 
-        d_in, t_empty, txd,
-        cnt16x, no_bits_sent,
-        t_buffer,clk1x,
-        sending,t_data
+        //clk16x, 
+        clrn, 
+        wrn, 
+        d_in, 
+        t_empty, 
+        txd,
+        //cnt16x, 
+        no_bits_sent,
+        t_buffer,
+        clk_uart,
+        sending,
+        t_data
 
 );
 
 input [7:0] d_in;  // data byte from cpu
-input [3:0] cnt16x; // x16 clock counter
-input clk16x,clrn; // baud rate * 16 clock
+//input [3:0] cnt16x; // x16 clock counter
+//input clk16x;
+input clrn; // baud rate * 16 clock
 input wrn; // cpu write, active low
-output reg txd; // uart txd
+
+output reg txd; // uart txd   -----------------------> salida principal TX
 output reg t_empty; // transmitter empty
 output reg [3:0] no_bits_sent; // number of bits sent
-output reg [7:0] t_data; // reg d_in
-output reg [7:0] t_buffer; // reg for sending
-output clk1x; // clock for sending txd
-output reg sending; // sending a txd bit
+output reg [7:0] t_data; // reg d_in-------------->  ojo aqui salida a memoria
+output reg [7:0] t_buffer; // reg for sending -------------> ojo aqui salida a memoria
+output clk_uart; // clock for sending txd
+output reg sending; // sending a txd bit   ---------------> Salida indicador Led
+
+
 reg load_t_buffer; // load t_buffer
 
 
 // load data to t_data, then to t_buffer, and generate sending signal
-always @ (posedge clk16x or negedge clrn or negedge wrn) begin
+always @ (posedge clk_uart or negedge clrn or negedge wrn) begin
     if (!clrn) begin // on a reset
         sending <= 0; // clear sending
         t_empty <= 1; // transmitter is ready
@@ -55,9 +66,9 @@ always @ (posedge clk16x or negedge clrn or negedge wrn) begin
 end 
 
 // send a frame: [start, d0, d1, ..., d7, parity, stop]
-assign clk1x = cnt16x[3];
+//assign clk_uart = cnt16x[3];
  // clock for sending txd
-always @ (posedge clk1x or negedge sending) begin
+always @ (posedge clk_uart or negedge sending) begin
     if (!sending) begin    // if not sending
         no_bits_sent <= 4'd0;    // clear counter
         txd <= 1;    // stop bits
@@ -81,5 +92,6 @@ always @ (posedge clk1x or negedge sending) begin
 
 
 endmodule
+
 
 

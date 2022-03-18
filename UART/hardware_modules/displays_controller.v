@@ -1,7 +1,18 @@
 //module displays_controller (seg0,seg1,seg2,seg3,num );
-module displays_controller (seg0,seg1,seg2,seg3,seg4,seg5,num );
+module displays_controller (
+										clock,
+										seg0,
+										seg1,
+										seg2,
+										seg3,
+										seg4,
+										seg5,
+										num );
 //input	[15:0]	num;
+
+input clock;
 input	[23:0]	num;
+
 //output	[6:0]	seg0,seg1,seg2,seg3;
 output	[6:0]	seg0,seg1,seg2,seg3,seg4,seg5;
 

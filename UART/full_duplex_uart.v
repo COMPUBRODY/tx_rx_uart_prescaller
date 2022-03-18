@@ -1,63 +1,78 @@
 module full_duplex_uart(
-                            clk16x,clrn,// universal asynchronous receiver transmitter
-                            rdn,
-                            d_out,
-                            r_ready,
+                            //clk16x,
+							clock,
+							clrn,// universal asynchronous receiver transmitter
+                            //rdn,
+                            //d_out,
+                            //r_ready,
                             rxd,
-                            parity_error,
-                            frame_error,
-                            wrn,
+                            //parity_error,
+                            //frame_error,
+                            //wrn,
                             d_in,
-                            t_empty,
-                            txd,
-                            cnt16x,
-                            no_bits_rcvd,
-                            r_buffer,
-                            r_clk1x,
+							//RX I/O
+                            //cnt16x,
+                            //no_bits_rcvd,
+                            //r_buffer,
+                            //r_clk1x,
                             sampling,
                             r_data,
-                            no_bits_sent,
-                            t_buffer,
-                            t_clk1x,
+                            //no_bits_sent,
+							//reciving_rx,
+							//TX I/O
+							tx_send,
+							//t_empty,
+                            txd,
+                            //t_buffer,
+                            //t_clk1x,
                             sending,
-                            t_data                     
+                            //t_data,
+							clk_uart
 );
 
 
-input clk16x, clrn; // baud rate * 16 clock
+// SIGNALS OF CLOCKS
 
-// signals for receiver
-input rdn; // cpu read, active low
-input rxd;
+input clock;
+input clrn; // baud rate * 16 clock
+input clk_uart;
+//input clk16x;
 
- // uart rxd
-output [7:0] d_out; // data byte to cpu
-output r_ready; // receiver is ready
-output parity_error; // parity check error
-output frame_error; // data frame error
 
-// signals for transmitter
+// SIGNALS OF TRANSMITER
+
 input [7:0] d_in; // data byte from cpu
-input wrn; // cpu write, active low
+input tx_send; //this enables the sending message from external trigger
+//input wrn; // cpu write, active low
 output txd; // uart txd
-output t_empty; // transmitter empty
+//output t_empty; // transmitter empty
 
-// for test (internal signals)
-output [10:0] r_buffer; // 11-bit frame
+// SIGNALS OF RECEIVER
+
+input rxd;
+//input rdn; // cpu read, active low
 output [7:0] r_data; // received data bits
-output [7:0] t_buffer; // register for sending
-output [7:0] t_data; // register d_in
-output [3:0] cnt16x; // x16 clock counter
-output [3:0] no_bits_rcvd; // # of bits received
-output [3:0] no_bits_sent; // number of bits sent
 output sampling; // sampling an rxd bit
-
-output r_clk1x; // clock for sampling rxd
 output sending; // sending a txd bit
-output t_clk1x; // clock for sending txd
-reg [3:0] cnt16x; // x16 clock counter
+//output [10:0] r_buffer; // 11-bit frame
+//output [7:0] t_buffer; // register for sending
+//output [7:0] t_data; // register d_in
+//output [3:0] no_bits_rcvd; // # of bits received
+//output [3:0] no_bits_sent; // number of bits sent
+//output [7:0] d_out; // data byte to cpu
+//output r_ready; // receiver is ready
+//output parity_error; // parity check error
+//output frame_error; // data frame error
 
 
+//output r_clk1x; // clock for sampling rxd
+//output t_clk1x; // clock for sending txd
+//output [3:0] cnt16x; // x16 clock counter
+//reg [3:0] cnt16x; // x16 clock counter
+
+	
+
+/*
     // a 4-bit counter
     always @ (posedge clk16x or negedge clrn) begin
         if (!clrn) begin            // on reset
@@ -67,11 +82,11 @@ reg [3:0] cnt16x; // x16 clock counter
             cnt16x <= cnt16x + 4'd1; // counter++
         end
     end
-
+*/
 
 // receiver
 uart_rx recver (
-						 clk16x, 
+						 //clk16x, 
 						 clrn, 
 						 rdn, 
 						 d_out, 
@@ -79,7 +94,7 @@ uart_rx recver (
 						 rxd, 
 						 parity_error,
 						 frame_error, 
-						 cnt16x, 
+						 //cnt16x, 
 						 r_data, 
 						 no_bits_rcvd, 
 						 r_buffer,
@@ -89,16 +104,17 @@ uart_rx recver (
 
 // transmitter
 uart_tx sender (
-						 clk16x, 
+						 //clk16x, 
 						 clrn, 
 						 wrn, 
 						 d_in, 
 						 t_empty, 
 						 txd, 
-						 cnt16x,
+						 //cnt16x,
 						 no_bits_sent, 
 						 t_buffer, 
-						 t_clk1x, 
+						 //t_clk1x, 
+						 clk_uart,
 						 sending, 
 						 t_data
 );

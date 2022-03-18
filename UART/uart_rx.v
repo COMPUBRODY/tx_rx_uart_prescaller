@@ -21,13 +21,13 @@ input clk16x,clrn; 					    // baud rate * 16 clock
 input rdn; 								// cpu read, active low
 input rxd;                              // uart rxd
 
-output [7:0] d_out;                     // data byte to cpu
+output [7:0] d_out;                     // data byte to cpu     -------------> ojo aqui salida a memoria
 output reg r_ready;                     // receiver is ready
 output reg parity_error;                // parity check error
 output reg frame_error;                 // data frame error
-output reg [10:0] r_buffer;             // 11-bit frame
-output reg [7:0] r_data;                // received data bits
-output reg [3:0] no_bits_rcvd;          // # of bits received
+output reg [10:0] r_buffer;             // 11-bit frame         -------------> ojo aqui salida a memoria
+output reg [7:0] r_data;                // received data bits   -------------> ojo aqui salida a memoria
+output reg [3:0] no_bits_rcvd;          // # of bits received   -------------> para cambios en estados
 output reg clk1x;                       // clock for sampling rxd
 output reg sampling;                    // sampling an rxd bit
 
@@ -66,8 +66,11 @@ reg rxd_old;                            // registered rxd_new
         end
     end
 
-
+/*
+    Se cancela su uso porque se utiliza externamente en un modulo el preescaller.
+    //===============================
     // sampling clock: clk1x
+    //===============================
     always @ (posedge clk16x or negedge clrn) begin
         if (!clrn) begin
             clk1x <= 0;
@@ -83,7 +86,7 @@ reg rxd_old;                            // registered rxd_new
                 clk1x <= 0;                              // stop clk1x
         end
     end
-
+*/
 
 // number of bits received
     always @ (posedge clk1x or negedge sampling) begin
@@ -112,13 +115,13 @@ reg rxd_old;                            // registered rxd_new
                 frame_error <= 0;
             end 
             else begin
-                if (no_bits_rcvd == 4'd11) begin
+                if (no_bits_rcvd == 4'd11) begin            //d'11 porque serian 4'b1011  solo se pueden recibir de 5 a 8 bits, los otros 3 1 de paridad y otro de stop, 1 de error??? 
                     r_data <= r_buffer[8:1];
                     r_ready <= 1;
-                    if ( ^r_buffer[9:1]) begin
-                        parity_error <= 1;
+                    if ( ^r_buffer[9:1]) begin  //excluye todo bit del buffer 9:1 que no sea igual al anterior
+                        parity_error <= 1;          
                     end
-                    if (!r_buffer[10]) begin
+                    if (!r_buffer[10]) begin    //si se llega a un bit mayor a 10 se manda un error
                         frame_error <= 1;
                     end
                 end
@@ -126,7 +129,11 @@ reg rxd_old;                            // registered rxd_new
         end
 end
     assign d_out = !rdn ? r_data : 8'hz;
-
+//assert_always #(severity_level, property_type, msg, coverage_level)
+    //instance_name(clk,reset,test_exp)
+   // assert_always #(1,0, "Err:NON", 0)
+     //   AA1 (clk, 1'b1, (cnt >= 0) && (cnt<= 9));
+        
 endmodule
 
 

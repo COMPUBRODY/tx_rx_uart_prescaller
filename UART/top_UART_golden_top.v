@@ -91,6 +91,11 @@ module top_UART_golden_top(
 wire 	flag_1;
 wire	slow_clk;
 wire	uart_Clk;
+
+wire	[23:0]	bytes_disp;  
+wire	tx_send;
+wire	[7:0]		tx_data;
+wire	[7:0]		rx_data;
 //		REGISTERS
 //reg [:] ;
 
@@ -107,69 +112,30 @@ wire	uart_Clk;
 -MODULOS UTILIZADOS
 		
 		a) Debouncer										Aplicar a hardware, no comprobado, creo!
-		b) Displays controller							TODO OK
-		c)	Preescaller (2 Freq, Modificables)   	Ingresar por parametro la freq necesaria?
-		d) Contadores?										NO NECESARIO SEGUN YO
-		c) UART (New)										IMPLEMENTACION CON TX Y RX
-		d) generador de Baudrate						Necesario conectados al preescaller
-		e) controlador de registros					necesario para mandar o recibir cadenas
+		b) Displays contoller							TODO OK
+		c)	Preescaller (Parametrizable)   	Ingresar por parametro la freq necesaria?
+		d) UART_Tx_Rx (New)										IMPLEMENTACION CON TX Y RX
+		e) generador de Baudrate						Necesario conectados al preescaller
+		f) controlador de registros					necesario para mandar o recibir cadenas
 		
 
 =====================================*/
 
 
-/*=====================================
-		UART MODULE 
-
-
-uart u1 (
-			  reset,
-			  dbus,
-			  a,
-			  rd_,
-			  wr_,
-			  cs_,
-			  din,
-			  clkin,
-			  int,
-			  dout,
-			  clkout
-    );
-
-*/
-
-/*=====================================
-		UART RX MODULE 
-
- 
- uart_rx		u1	(
-	 
-	 				clk16x,
-					clrn,
-					rdn,
-               d_out,
-					r_ready,rxd,
-               parity_error,
-               frame_error,
-					cnt16x,
-               r_data,
-					no_bits_rcvd,
-               r_buffer,
-               clk1x,
-					sampling
-
- );
- */
- 
  /*=====================================
 		UART FULL DUPLEX MODULE 
 =====================================*/
 full_duplex_uart u1(
-							.clk16x		(uart_Clk), 
+							.clock		(CLOCK_50),
+							.clk_uart	(uart_Clk), 
 							.clrn			(SW[0]),
 							.txd			(GPIO_0[33]),
 							.rxd			(GPIO_0[31]),
-							.sending		(LEDR[2])
+							.sending		(LEDR[2]),
+							.tx_send		(tx_send),
+							.d_in			(tx_data),
+							.r_data		(rx_data),
+							.sampling	(LEDR[1])
 
 );
 
@@ -183,7 +149,8 @@ full_duplex_uart u1(
 
 
 displays_controller u2 (
-				.num	(KEY),
+				.clock	(CLOCK_50),
+				.num	(bytes_disp),
 				.seg0	(HEX0) ,
 				.seg1	(HEX1) ,
 				.seg2	(HEX2) ,
@@ -215,7 +182,7 @@ preescaller	u3	(
 debouncer	u4(
 				 .clk		(CLOCK_50),
 				 .PB		(KEY[0]),  
-				 .PB_state	(LEDR[0]) 
+				 .PB_state	(tx_send) 
 
 );
 
@@ -240,8 +207,17 @@ baudrate_generator u5(
 =====================================*/
 
 register_controller u6(
-
+			.clock		(CLOCK_50),
+			.rx_in		(rx_data),
+			.tx_out		(tx_data),
+			.Byte_0		(bytes_disp [3:0]),
+			.Byte_1		(bytes_disp [7:4]),
+			.Byte_2		(bytes_disp [11:8]),
+			.Byte_3		(bytes_disp [15:12]),
+			.Byte_4		(bytes_disp [19:16]),
+			.Byte_5		(bytes_disp [23:20])		
 );
+
 //How many Bytes?
 //for send strings?
 
