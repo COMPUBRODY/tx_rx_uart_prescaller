@@ -1,4 +1,5 @@
-//`timescale 1ns / 10ps
+`timescale 10ns / 100ps
+
 //`define SOURCE_CLK  50000000
 //`define SCALE_CLK  50000000
 module preescaller#(parameter CLK , parameter SCALE  )(
@@ -9,9 +10,10 @@ module preescaller#(parameter CLK , parameter SCALE  )(
 );
     //localparam Freq_in      = 50000000;
     //localparam Parts_div    = 20; 
-    localparam [31:0] MAX_SIZE = CLK/SCALE ;    //Señal Resultante Maxima Freq 2.5mhz, 4nS
+    localparam [31:0] MAX_SIZE = SCALE ;    //Señal Resultante )Maxima Freq 2.5mhz, 4nS
 	//parameter COUNTER_SIZE = MAX_SIZE;
 	//parameter COUNTER_MAX_COUNT = (2 ** COUNTER_SIZE) - 1;
+    parameter COUNTER_MAX_COUNT = (2 ** MAX_SIZE) - 1;
 	
 	reg [31:0] count;
 	
@@ -26,14 +28,15 @@ module preescaller#(parameter CLK , parameter SCALE  )(
             if(count == MAX_SIZE) 
             begin
                 count = 0;
+                //slow_clock = 1;
             end
-            /*if(count == 1)
+            if(count == 1)
             begin
-                count = 0;
-            end*/
+                #100 count = 0;  //para que solo realice el pulso y tengo un dutty cycle de menor 10% ?? 
+            end
 	    end
 	
-	assign slow_clock = count;
+    assign slow_clock = (count ==  0 ) ? 1'b1 : 1'b0;
 	
 endmodule
 

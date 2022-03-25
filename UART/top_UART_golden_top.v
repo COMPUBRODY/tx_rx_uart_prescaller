@@ -96,6 +96,8 @@ wire	[23:0]	bytes_disp;
 wire	tx_send;
 wire	[7:0]		tx_data;
 wire	[7:0]		rx_data;
+wire    enable_uart;
+
 //		REGISTERS
 //reg [:] ;
 
@@ -126,15 +128,19 @@ wire	[7:0]		rx_data;
 =====================================*/
 full_duplex_uart u1(
 							.clock			(CLOCK_50),
-							.clk_uart		(uart_Clk), 
-							.clrn			(SW[0]),
-							.txd			(GPIO_0[33]),
-							.rxd			(GPIO_0[31]),
-							.sending		(LEDR[2]),
-							.tx_send		(tx_send),
-							.d_in			(tx_data),
+							.enable_uart	(enable_uart), 
+							.reset_uart		(SW[0]),
+							//RX I/O
+							.rx_indicator	(LEDR[0]),
 							.r_data			(rx_data),
-							.sampling		(LEDR[1])
+							.enable_rx		(SW[3]),
+							.rxd			(GPIO_0[31]),
+							//TX I/O
+							.d_in			(tx_data),
+							.enable_tx		(SW[4]),
+							.tx_send		(tx_send),
+							.txd			(GPIO_0[33]),
+							.tx_indicator	(LEDR[1])
 
 );
 
@@ -148,14 +154,15 @@ full_duplex_uart u1(
 
 
 displays_controller u2 (
-				.clock	(CLOCK_50),
-				.num	(bytes_disp),
-				.seg0	(HEX0) ,
-				.seg1	(HEX1) ,
-				.seg2	(HEX2) ,
-				.seg3	(HEX3) ,
-				.seg4	(HEX4) ,
-				.seg5	(HEX5) 
+				.clock		(CLOCK_50),
+				.num		(bytes_disp),
+				.seg0		(HEX0) ,
+				.seg1		(HEX1) ,
+				.seg2		(HEX2) ,
+				.seg3		(HEX3) ,
+				.seg4		(HEX4) ,
+				.seg5		(HEX5) 
+				
 	);
 
 //Modo RX
@@ -179,11 +186,11 @@ debouncer	u4(
 /*=====================================
 		BAUDRATE GENERATOR___ok
 =====================================*/
-
+// FALTA HACER UN MULTIPLEXAJE PARA SELECCIONAR CUALQUIER BAUDRATE SIN PROBLEMAS
 baudrate_generator u5(
 								.clock			(CLOCK_50),
-								.baudrate_sel	(SW[3:1]),
-								.uart_clock		(uart_Clk)
+								.baudrate_sel	(SW[2:1]),
+								.uart_enable	(enable_uart)
 );
 
 //9600		LEDR_3 Indicador
@@ -193,17 +200,19 @@ baudrate_generator u5(
 /*=====================================
 		REGISTERS CONTROLLER
 =====================================*/
-
+// FALTA HACER SINCRONO EL CONTROLADOR DE DISPLAYS
 register_controller u6(
-			.clock		(CLOCK_50),
-			.rx_in		(rx_data),
-			.tx_out		(tx_data),
-			.Byte_0		(bytes_disp [3:0]),
-			.Byte_1		(bytes_disp [7:4]),
-			.Byte_2		(bytes_disp [11:8]),
-			.Byte_3		(bytes_disp [15:12]),
-			.Byte_4		(bytes_disp [19:16]),
-			.Byte_5		(bytes_disp [23:20])		
+			.clock			(CLOCK_50),
+			.rx_in			(rx_data),
+			.tx_out			(tx_data),
+			.Byte_0			(bytes_disp [3:0]),
+			.Byte_1			(bytes_disp [7:4]),
+			.Byte_2			(bytes_disp [11:8]),
+			.Byte_3			(bytes_disp [15:12]),
+			.Byte_4			(bytes_disp [19:16]),
+			.Byte_5			(bytes_disp [23:20]),
+			.see_bauds		(KEY[1]),
+			.baudrate_sel	(SW[2:1])	
 );
 
 //How many Bytes?
