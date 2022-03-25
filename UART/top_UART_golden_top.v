@@ -63,23 +63,28 @@ module top_UART_golden_top(
 
       /* Enables KEY - 3.3V */
 	`ifdef ENABLE_KEY
-      input       [3:0]  KEY,
+      input       [1:0]  KEY,
 	`endif
 
       /* Enables LEDR - 3.3V */
+
 	`ifdef ENABLE_LEDR
-      output      [9:0]  LEDR,
+      output      [1:0]  LEDR,
 	`endif
 
       /* Enables SW - 3.3V */
 	`ifdef ENABLE_SW
-      input       [9:0]  SW,
+      input       [5:0]  SW,
 	`endif
 	
       /* Enables GPIO - 3.3V */
 	`ifdef ENABLE_GPIO
-      inout     [35:0]         GPIO_0
+      inout     [33:31]         GPIO_0
+	  //inout     [31]         GPIO_0
 	`endif
+	
+	//inout 	GPIO_0_31,
+	//inout	GPIO_0_33
 );
 
 
@@ -135,11 +140,13 @@ full_duplex_uart u1(
 							.r_data			(rx_data),
 							.enable_rx		(SW[3]),
 							.rxd			(GPIO_0[31]),
+							//.rxd			(GPIO_0_31),
 							//TX I/O
 							.d_in			(tx_data),
 							.enable_tx		(SW[4]),
 							.tx_send		(tx_send),
 							.txd			(GPIO_0[33]),
+							//.txd			(GPIO_0_33),
 							.tx_indicator	(LEDR[1])
 
 );

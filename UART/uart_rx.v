@@ -9,8 +9,8 @@ module uart_rx (
 
 ); // uart receiver
 
-input clk;          //general CLK
-input baud_uart; // clock for baudrate
+input clk;                              //general CLK
+input baud_uart;                        // clock for baudrate
 input rxd;                              // uart rxd
 input enable_rx;                        //for waiting a lecture
 

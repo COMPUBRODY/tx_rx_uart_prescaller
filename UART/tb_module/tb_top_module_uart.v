@@ -1,15 +1,15 @@
 `timescale 10ns / 100ps
 
-
 module tb_top_module_uart ();
 
-reg clock_50;
-reg [3:0]   botons;
-reg [9:0]   leds_flags;
-reg [9:0]   swiches;
-reg [35:0]  gpios;
+reg 	clock_50;
+reg 	[1:0]   botons;
+reg 	[5:0]   swiches;
+//reg 	[1:0]	gpios_rx;
 
-wire [6:0] disp_0, disp_1, disp_2, disp_3, disp_4, disp_5;
+wire	[2:0]	gpios   ;
+wire 	[1:0]   leds_flags;
+wire 	[6:0] disp_0, disp_1, disp_2, disp_3, disp_4, disp_5;
 
 always #1 clock_50 = ~clock_50;
 
@@ -32,7 +32,7 @@ top_UART_golden_top         tb_top_module_uart_DUT(
 initial
         begin
             
-            clock_50   	=   0;
+            clock_50   	    =   0;
             botons  		=   0;
             swiches 		=   0;
 
@@ -52,21 +52,58 @@ initial
             swiches[4] = 1;
             //presionar boton para envio en tx todo habilitado
 				#50
-            botons[0] = 1;
+            botons[0] = 0;
+	        #50
+            botons[0] = 1; //soltar boton
 
              // que va a enviar si no hay nada en los registros...
             /*=====================================
+                        CASO DE PRUEBA
+                        SELECT BAUDRATE
+            =======================================*/
+            #50
+            swiches[2:1]    = 2'b11;
+            #50
+            swiches[2:1]    = 2'b10;
+            #50
+            swiches[2:1]    = 2'b01;
+            #50
+            swiches[2:1]    = 2'b00;
+            #50
+            /*=====================================
                         CASO DE PRUEBA RX
             =======================================*/
+            #50
+            // reset uart
+            swiches[0]      = 0;
+            #50
+            swiches[0]      = 1;
+            #50
+            //  habilitar rx
+            swiches[3]      = 1;
+            #50
+            swiches[2:1]    = 2'b01;
+            #50
+            /*=======================================
+            #100
+            gpios     =   3'b100;
+            #5
+            gpios[2]     =   0;
+            #20         
+            gpios[2]     =   1;
+            #5
+            gpios[2]     =   0;
+            #50
+            gpios[2]     =   1;
+            #10
+            gpios[2]     =   0;
+            #300 
+*/
 
 
-            /*=======================================================
-                CASO DE PRUEBA MOSTRAR BAUDRATE SELECCIONADO
-            =======================================================*/
 
 
-
-            $display    ("Simulation for TX Transmitter Finished");
+            $display    ("Simulation for top_module_uart Finished");
             $stop;
 
         end

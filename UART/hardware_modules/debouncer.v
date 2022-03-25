@@ -2,40 +2,43 @@ module debouncer(
     input clk,
     input PB,  // "PB" is the glitchy, asynchronous to clk, active low push-button signal
 
-    // from which we make three outputs, all synchronous to the clock
-    output reg PB_state,  // 1 as long as the push-button is active (down)
-    output PB_down,  // 1 for one clock cycle when the push-button goes down (i.e. just pushed)
-    output PB_up   // 1 for one clock cycle when the push-button goes up (i.e. just released)
+    output reg PB_state  // 1 as long as the push-button is active (down)
+
 );
 
-// First use two flip-flops to synchronize the PB signal the "clk" clock domain
-reg PB_sync_0;  
-always @(posedge clk) 
-    PB_sync_0 <= ~PB;  // invert PB to make PB_sync_0 active high
 
-reg PB_sync_1;  
-always @(posedge clk) 
-    PB_sync_1 <= PB_sync_0;
+wire slow_clk;
+wire en = 1'b1;
+reg [7:0]debouncer_cnt;
 
-// Next declare a 16-bits counter
-reg [15:0] PB_cnt;
+initial PB_state = 1'b0;
+initial debouncer_cnt =  7'h00;
 
-// When the push-button is pushed or released, we increment the counter
-// The counter has to be maxed out before we decide that the push-button state has changed
+preescaller #(.CLK(50000000),.SCALE(1000)) u1(
+                        .clock      (clk),
+                        .enable     (en),
+                        .slow_clock (slow_clk)
+);
 
-wire PB_idle = (PB_state==PB_sync_1);
-wire PB_cnt_max = &PB_cnt;	// true when all bits of PB_cnt are 1's
 
-always @(posedge clk)
-    if(PB_idle)
-        PB_cnt <= 0;  // nothing's going on
-    else
+always @(posedge slow_clk) 
     begin
-        PB_cnt <= PB_cnt + 16'd1;  // something's going on, increment the counter
-        if(PB_cnt_max) PB_state <= ~PB_state;  // if the counter is maxed out, PB changed!
+        if (PB == 1'b0) 
+            begin
+                if(debouncer_cnt == 40) begin //40 ms DEBOUNCE
+                    PB_state = 1'b1;
+                end
+                /*if(debouncer_cnt  > 60) // 20 ms ON HIGH
+                begin
+                    PB_state =1'b0;  
+                end*/
+                else
+                    debouncer_cnt=debouncer_cnt+1'b1;
+                    PB_state = 1'b0;
+            end
+        else
+            debouncer_cnt = 4'b0000;
     end
-
-assign PB_down = ~PB_idle & PB_cnt_max & ~PB_state;
-assign PB_up   = ~PB_idle & PB_cnt_max &  PB_state;
+    
 
 endmodule

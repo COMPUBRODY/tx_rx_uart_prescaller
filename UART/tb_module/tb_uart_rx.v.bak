@@ -1,0 +1,44 @@
+`timescale 10ns / 100ps
+
+module tb_uart_rx ();
+
+
+reg [3:0] cnt16x; 					// x16 clock counter
+reg clk16x,clrn; 					    // baud rate * 16 clock
+reg rdn; 								// cpu read, active low
+reg rxd;                              // uart rxd
+
+wire [7:0] d_out;                     // data byte to cpu
+wire r_ready;                     // receiver is ready
+wire parity_error;                // parity check error
+wire frame_error;                 // data frame error
+wire [10:0] r_buffer;             // 11-bit frame
+wire [7:0] r_data;                // received data bits
+wire [3:0] no_bits_rcvd;          // # of bits received
+wire clk1x;                       // clock for sampling rxd
+wire sampling;                    // sampling an rxd bit
+
+always #1 clock = ~clock;
+
+/*
+=============================
+HOW TO READ A FRAME
+===========================
+==================================
+TEST FRAME
+==================================
+
+==================================
+NUMBER OF BITS COUNTER
+==================================
+
+==================================
+TEST STATES
+==================================
+
+==================================
+TEST FALLING EDGE
+==================================
+*/
+
+endmodule

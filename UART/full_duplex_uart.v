@@ -1,8 +1,7 @@
 module full_duplex_uart(
 							clock,
 							enable_uart,
-							reset_uart,// universal asynchronous receiver transmitter
-                                                    
+							reset_uart,// universal asynchronous	receiver transmitter               
 							//RX I/O
                             rx_indicator,
                             r_data,

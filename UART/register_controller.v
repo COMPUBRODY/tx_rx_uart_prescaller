@@ -52,10 +52,22 @@ always @(posedge clock) begin
 end
 // necesito un enable que se active al presionar el boton junto con el envio despues de unos segundos
 
-always @(posedge see_bauds)	begin
-	if (baudrate_sel == 4'b01 )
-		displays	=	24'h009600;
+always @(posedge clock)	begin
+	if (!see_bauds) 
+	begin
+		if (baudrate_sel == 2'b01 )
+			displays	=	24'h009600;
+		if (baudrate_sel == 2'b10 )
+			displays	=	24'h057600;
+		if (baudrate_sel == 2'b11 )
+			displays	=	24'h115200;
+		if (baudrate_sel == 2'b00 )
+			displays	=	24'h100000;
+	end
+
 end
+
+
 
 /*
 assign Byte_0 = 4'b0001;
