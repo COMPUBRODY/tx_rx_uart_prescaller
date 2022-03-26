@@ -2,10 +2,10 @@ module uart_tx(
         clk,
         baud_uart,
         d_in, 
-        txd,
-        sending,
         tx_send,
-        enable_tx
+        enable_tx,
+        txd,
+        sending
 
 );
 

@@ -2,9 +2,10 @@ module uart_rx (
                     clk,
                     baud_uart,
                     rxd,
-                    r_data,
+                    enable_rx,
                     sampling,
-                    enable_rx
+                    r_data
+                    
                     
 
 ); // uart receiver
@@ -27,7 +28,9 @@ reg r_ready;                     // receiver is ready
 reg parity_error;                // parity check error
 reg frame_error;                 // data frame error
 
-
+/*===================================
+DETECT FALLING EDGE
+===================================*/
 // latch 2 rxd bits for detecting a falling edge
     always @ (posedge clk) begin
         if (!enable_rx) begin
@@ -39,7 +42,9 @@ reg frame_error;                 // data frame error
             rxd_new <= rxd;             // shift registers
         end
     end
-
+/*===================================
+START BIT DETECTOR
+===================================*/
 // detect start bit and generate sampling signal
 //nyquist
     always @ (posedge clk) begin
@@ -60,7 +65,9 @@ reg frame_error;                 // data frame error
         end
     end
 
-
+/*===================================
+COUNTER BITS RECEIVED
+===================================*/
 // number of bits received
     always @ (posedge clk) begin
         if (!sampling) begin
@@ -74,6 +81,9 @@ reg frame_error;                 // data frame error
         end
     end
 
+/*===================================
+RECEPCION TRAMA LISTA
+===================================*/
     // one frame, rdn clears r_ready
     always @ (posedge clk ) begin
         if (!enable_rx) begin            // on a reset
@@ -86,12 +96,15 @@ reg frame_error;                 // data frame error
         else begin
             
             if (no_bits_rcvd == 4'd11) begin            //d'11 porque serian 4'b1011  solo se pueden recibir de 5 a 8 bits, los otros 3 1 de paridad y otro de stop, 1 de error??? 
-                r_data <= r_buffer[8:1];
-                r_ready <= 1;
-                if ( ^r_buffer[9:1]) begin  //excluye todo bit del buffer 9:1 que no sea igual al anterior
+            //si hay 11 bits recibidos tenemos una trama
+                r_data <= r_buffer[8:1];//la informacion de la trama pasa a r_data
+                r_ready <= 1;//bandera de trama lista
+
+                if ( ^r_buffer[9:1]) begin  //excluye todo bit del buffer 9:1 que no sea igual al anterior,
+                //cada que el bit [9] sea distitnto hay un cambio de paridad 
                     parity_error <= 1;          
                 end
-                if (!r_buffer[10]) begin    //si se llega a un bit mayor a 10 se manda un error
+                if (!r_buffer[10]) begin    //si se llega a un bit mayor a 10 se manda un error...si no son 10 bits transmitidos manda trama error.
                     frame_error <= 1;
                 end
             end
