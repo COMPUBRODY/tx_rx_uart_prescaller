@@ -11,7 +11,7 @@ module register_controller(
 			Byte_2,
 			Byte_3,
 			Byte_4,
-			Byte_5,
+			Byte_5
 			
 );
 

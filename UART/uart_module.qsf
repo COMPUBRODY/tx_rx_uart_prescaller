@@ -692,6 +692,20 @@ set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_top_modul
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_top_module_uart -section_id tb_top_module_uart
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to GPIO_0_33
 set_instance_assignment -name IO_STANDARD "3.0-V LVTTL" -to GPIO_0_31
+set_global_assignment -name EDA_TEST_BENCH_NAME tb_full_duplex_uart -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_full_duplex_uart
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_full_duplex_uart -section_id tb_full_duplex_uart
+set_global_assignment -name EDA_TEST_BENCH_NAME tb_debouncer -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_debouncer
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_debouncer -section_id tb_debouncer
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_baudrate_generator.v -section_id tb_baudrate_generator
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_preescaller.v -section_id tb_preescaller
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_uart_tx.v -section_id tb_uart_tx
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_uart_rx.v -section_id tb_uart_rx
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_register_controller.v -section_id tb_register_controller
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_top_module_uart.v -section_id tb_top_module_uart
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_full_duplex_uart.v -section_id tb_full_duplex_uart
+set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_debouncer.v -section_id tb_debouncer
 set_global_assignment -name VERILOG_FILE tb_module/tb_full_duplex_uart.v
 set_global_assignment -name VERILOG_FILE config_files/top_config.v
 set_global_assignment -name VERILOG_FILE config_files/param_values.v
@@ -722,15 +736,5 @@ set_global_assignment -name VERILOG_FILE baudrate_generator.v
 set_global_assignment -name VERILOG_FILE register_controller.v
 set_global_assignment -name VERILOG_FILE tb_register_controller.v
 set_global_assignment -name VERILOG_FILE tb_module/tb_register_controller.v
-set_global_assignment -name EDA_TEST_BENCH_NAME tb_full_duplex_uart -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_full_duplex_uart
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_full_duplex_uart -section_id tb_full_duplex_uart
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_baudrate_generator.v -section_id tb_baudrate_generator
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_preescaller.v -section_id tb_preescaller
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_uart_tx.v -section_id tb_uart_tx
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_uart_rx.v -section_id tb_uart_rx
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_register_controller.v -section_id tb_register_controller
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_top_module_uart.v -section_id tb_top_module_uart
-set_global_assignment -name EDA_TEST_BENCH_FILE tb_module/tb_full_duplex_uart.v -section_id tb_full_duplex_uart
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/Ejemplo_clase_auto_stripped.stp

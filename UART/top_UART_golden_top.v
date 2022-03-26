@@ -102,6 +102,7 @@ wire	tx_send;
 wire	[7:0]		tx_data;
 wire	[7:0]		rx_data;
 wire    enable_uart;
+wire	CLK_10MHZ;
 
 //		REGISTERS
 //reg [:] ;
@@ -132,7 +133,7 @@ wire    enable_uart;
 		UART FULL DUPLEX MODULE 
 =====================================*/
 full_duplex_uart u1(
-							.clock			(CLOCK_50),
+							.clock			(CLK_10MHZ),
 							.enable_uart	(enable_uart), 
 							.reset_uart		(SW[0]),
 							//RX I/O
@@ -144,7 +145,8 @@ full_duplex_uart u1(
 							//TX I/O
 							.d_in			(tx_data),
 							.enable_tx		(SW[4]),
-							.tx_send		(tx_send),
+							//.tx_send		(tx_send),
+							.tx_send		(KEY[0]),
 							.txd			(GPIO_0[33]),
 							//.txd			(GPIO_0_33),
 							.tx_indicator	(LEDR[1])
@@ -161,7 +163,7 @@ full_duplex_uart u1(
 
 
 displays_controller u2 (
-				.clock		(CLOCK_50),
+				.clock		(CLK_10MHZ),
 				.num		(bytes_disp),
 				.seg0		(HEX0) ,
 				.seg1		(HEX1) ,
@@ -179,7 +181,7 @@ displays_controller u2 (
 
 /*=====================================
 		DEBOUNCER___ok
-=====================================*/
+=====================================
 
 debouncer	u4(
 				 .clk		(CLOCK_50),
@@ -187,7 +189,7 @@ debouncer	u4(
 				 .PB_state	(tx_send) 
 
 );
-
+*/
 //Manda Tx			LEDR_0 Indicador 
 
 /*=====================================
@@ -195,7 +197,7 @@ debouncer	u4(
 =====================================*/
 // FALTA HACER UN MULTIPLEXAJE PARA SELECCIONAR CUALQUIER BAUDRATE SIN PROBLEMAS
 baudrate_generator u5(
-								.clock			(CLOCK_50),
+								.clock			(CLK_10MHZ),
 								.baudrate_sel	(SW[2:1]),
 								.uart_enable	(enable_uart)
 );
@@ -209,7 +211,7 @@ baudrate_generator u5(
 =====================================*/
 // FALTA HACER SINCRONO EL CONTROLADOR DE DISPLAYS
 register_controller u6(
-			.clock			(CLOCK_50),
+			.clock			(CLK_10MHZ),
 			.rx_in			(rx_data),
 			.tx_out			(tx_data),
 			.Byte_0			(bytes_disp [3:0]),
@@ -224,5 +226,25 @@ register_controller u6(
 
 //How many Bytes?
 //for send strings?
+
+/*=====================================
+		CLOCK DIVIDER
+=====================================*/
+// ESTO FUE NECESARO IMPLEMENTAR DEBIDO A QUE EL RELOJ DE LA TARJETA ES DE 50MHZ, SE NECESITA BAJARLO A POR LO MENOS 10MHZ
+/*
+clock_divider	u7(
+
+			.fast_clock		(CLOCK_50),
+			.rst			(SW[5]),
+			.slow_clock		(CLK_10MHZ)
+
+);
+*/
+preescaller#(.CLK (50000000), .SCALE (10000000))     u8(
+                        .clock  (CLOCK_50),
+                        .enable  (SW[5]),
+                        .slow_clock (CLK_10MHZ)
+                      
+);
 
 endmodule

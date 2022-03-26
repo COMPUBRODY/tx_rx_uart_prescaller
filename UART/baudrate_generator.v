@@ -20,20 +20,20 @@ wire output_115200;
 
 //initial	uart_enable	=	0;
 
-preescaller#(.CLK (500), .SCALE (9600))     p_scaler_9600(
+preescaller#(.CLK (50000000), .SCALE (1000000))     p_scaler_9600(
                         .clock      (clock),
                         .enable     (enable_bauds[0]),
                         .slow_clock (output_9600)
 );
 
-preescaller#(.CLK (5), .SCALE (57600))     p_scaler_57600(
+preescaller#(.CLK (50000000), .SCALE (5000000))     p_scaler_57600(
                         .clock  (clock),
                         .enable  (enable_bauds[1]),
                         .slow_clock (output_57600)
                       
 );
 
-preescaller#(.CLK (50000000), .SCALE (115200))     p_scaler_115200(
+preescaller#(.CLK (50000000), .SCALE (10000000))     p_scaler_115200(
                         .clock  (clock),
                         .enable  (enable_bauds[2]),
                         .slow_clock (output_115200)

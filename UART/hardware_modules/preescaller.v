@@ -10,7 +10,7 @@ module preescaller#(parameter CLK , parameter SCALE  )(
 );
     //localparam Freq_in      = 50000000;
     //localparam Parts_div    = 20; 
-    localparam [31:0] MAX_SIZE = SCALE ;    //Señal Resultante )Maxima Freq 2.5mhz, 4nS
+    localparam [31:0] MAX_SIZE = CLK/(SCALE*16) ;    //Señal Resultante )Maxima Freq 2.5mhz, 4nS
 	//parameter COUNTER_SIZE = MAX_SIZE;
 	//parameter COUNTER_MAX_COUNT = (2 ** COUNTER_SIZE) - 1;
     parameter COUNTER_MAX_COUNT = (2 ** MAX_SIZE) - 1;
@@ -25,7 +25,7 @@ module preescaller#(parameter CLK , parameter SCALE  )(
         if(enable)
         begin
             count = count + 1;
-            if(count == MAX_SIZE) 
+            if(count == COUNTER_MAX_COUNT) 
             begin
                 count = 0;
                 //slow_clock = 1;

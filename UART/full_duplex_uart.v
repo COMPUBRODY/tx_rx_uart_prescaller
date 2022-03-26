@@ -36,6 +36,9 @@ module full_duplex_uart(
 	output [7:0] r_data; // received data bits
 	output rx_indicator; // sampling an rxd bit
 	output tx_indicator; // sending a txd bit
+	
+	wire rx_led;
+	wire tx_led;
 
 	// receiver
 	uart_rx recver (

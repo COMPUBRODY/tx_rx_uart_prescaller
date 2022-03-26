@@ -35,6 +35,16 @@ initial
             clock_50   	    =   0;
             botons  		=   0;
             swiches 		=   0;
+            /*=====================================
+                        CASO DE PRUEBA CLK_10MHZ
+            =======================================*/
+            swiches[5]  =   1;
+            #10
+            swiches[5]  =   0;
+            #10
+            swiches[5]  =   1;
+            #10
+            swiches[5]  =   0;
 
             /*=====================================
                         CASO DE PRUEBA TX
